@@ -1,0 +1,6 @@
+#nodeModules
+/node_modules/
+#publicFiles
+/public/
+#viewsFiles
+/views/
