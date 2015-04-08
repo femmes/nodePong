@@ -4,15 +4,15 @@
 <script src="/node/socket.io/socket.io.js"></script>
 <script>
 // cant console log
-$(document).ready(function(){
-	var loc = window.location.pathname;
-	var dir = loc.substring(0, loc.lastIndexOf('/'));
-	var socket = io.connect('http://54.148.32.230', {
-		path:'/node/socket.io'
-	});
+var loc = window.location.pathname;
+var dir = loc.substring(0, loc.lastIndexOf('/'));
+var socket = io.connect('http://54.148.32.230', {
+	path:'/node/socket.io'
+});
 
+$(document).ready(function(){
 	socket.on('currentCount', function (data) {
-		alert(data.count);
+		// alert(data.count);
 		$('#globalCount').text(data.count);
 	});
 
@@ -44,74 +44,12 @@ Counter: <span id="globalCount"></span>
 <div class="gameBody">
 	<div class="gameCanvasHolder">
 		<div class="gameCanvas">
-			<canvas id="pongCanvas" width="300" height="300" style="background-color:#000;">
-				
+			<canvas id="pongCanvas" width="300" height="300" style="background-color:#000;">	
 			</canvas>
 		</div>
 	</div>
 </div>
-<script type="text/javascript">
-$(document).ready(function(){
-	//canvas
-	var WIDTH;
-	var HEIGHT;
-	var ctx;
-	//circle start position
-	var ballx=150;
-	var bally=150;
-	//playerone start position
-	var playeronex=0;
-	var playeroney=125;
-	//playertwo start position
-	var playertwox=285;
-	var playertwoy=125;
-	//change ball in direction
-	var dx=2;
-	var dy=-4;
-
-	function init(){
-		ctx=$("#pongCanvas")[0].getContext("2d");
-		WIDTH=$("#pongCanvas").width();
-		HEIGHT=$("#pongCanvas").height();
-		return setInterval(draw,10);
-	}
-
-	function circle(x,y,r){
-		ctx.fillStyle="#fff";
-		ctx.beginPath();
-		ctx.arc(ballx,bally,r,0, Math.PI*2, true);
-		ctx.fill();
-	}
-
-	function rectangle(x,y,w,h){
-		ctx.fillStyle="#fff";
-		ctx.beginPath();
-		ctx.rect(x,y,w,h);
-		ctx.fill();
-	}
-
-	function clear(){
-		ctx.clearRect(0,0, WIDTH, HEIGHT);
-	}
-
-	function draw(){
-		clear();
-
-		circle(ballx,bally,10);
-		rectangle(playeronex,playeroney,15,50);
-		rectangle(playertwox,playertwoy,15,50);
-		
-		if (ballx + dx > WIDTH || ballx + dx < 0)
-			dx = -dx;
-		if (bally + dy > HEIGHT || bally + dy < 0)
-			dy = -dy;
-
-		ballx+=dx;
-		bally+=dy;
-	}
-
-	init();
-});	
-</script>
+<button class="playGame">PLAY</button>
+<script src="/node/game.js"></script>
 </body>
 </html>
