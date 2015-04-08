@@ -1,6 +1,7 @@
 #nodeModules
 /node_modules/
 #publicFiles
-/public/
+/public/assets/
+/public/index.html
 #viewsFiles
 /views/
