@@ -3,21 +3,12 @@ $(document).ready(function(){
 	var WIDTH;
 	var HEIGHT;
 	var ctx;
-	//circle start position
-	// var ballx=150;
-	// var bally=150;
-	//playerone start position
-	var playeronex=0;
-	var playeroney=125;
-	//playertwo start position
-	var playertwox=285;
-	var playertwoy=125;
-	//change ball in direction
-	// var dx=2;
-	// var dy=-4;
 
 	var clientsocket='';
 	var serversocket='';
+
+	var upClicked = false;
+	var downClicked = false;
 
 	function init(){
 		ctx=$("#pongCanvas")[0].getContext("2d");
@@ -65,17 +56,20 @@ $(document).ready(function(){
 		// bally+=dy;
 	}
 
-	// init();
 	init();
 
 	socket.on('initial', function (data) {
-		clientsocket=socket.id;
 		clear();
-		circle(data.position.ballx,data.position.bally,10, function(){});
+		circle(data.gameball.position.ballx,data.gameball.position.bally,10, function(){});
+		rectangle(data.playerone.position.playeronex,data.playerone.position.playeroney,15,50);
+		rectangle(data.playertwo.position.playertwox,data.playertwo.position.playertwoy,15,50);
 	});
 
 	//gets called only on clicked browser
 	$('.playGame').on('click', function(){
+		$('.playGame').hide();
+		$('.waitingForPlayer').show();
+		clientsocket=socket.id;
 		socket.emit('playGame', {socketid: clientsocket}, function(data){});
 	});
 
@@ -83,14 +77,42 @@ $(document).ready(function(){
 	socket.on('drawBall', function (data) {
 		clear();
 		serversocket=data.socketid;
-		circle(data.position.ballx,data.position.bally,10, function(){
+		rectangle(data.playerone.position.playeronex,data.playerone.position.playeroney,15,50);
+		rectangle(data.playertwo.position.playertwox,data.playertwo.position.playertwoy,15,50);
+		circle(data.gameball.position.ballx,data.gameball.position.bally,10, function(){
 			if(clientsocket===serversocket){
 				// alert(clientsocket);
-				socket.emit('playGame', {socketid: clientsocket}, function(data){
+				// socket.emit('playGame', {socketid: clientsocket}, function(data){
+				// 	// alert(data.ballx);
+				// });
+				socket.emit('continueGame', {socketid: clientsocket}, function(data){
 					// alert(data.ballx);
 				});
 			}
 		});
 	});
 
+	$(document).keydown(function(e){
+		if(e.keyCode==38 || e.keyCode==40){
+			socket.emit('moveplayer',{keycode : e.keyCode, socketid : socket.id}, function(data){});
+		}
+	});
+	$(document).keyup(function(e){
+		// socket.emit('playeronemove',{keycode : e.keyCode}, function(data){})
+	});
+
+	socket.on('drawPlayer', function (data) {
+		clear();
+		circle(data.gameball.position.ballx,data.gameball.position.bally,10, function(){});
+		rectangle(data.playerone.position.playeronex,data.playerone.position.playeroney,15,50);
+		rectangle(data.playertwo.position.playertwox,data.playertwo.position.playertwoy,15,50);
+	});
+
+	socket.on('gg', function (data){
+		$('.ggnore').show();
+		clear();
+		circle(data.gameball.position.ballx,data.gameball.position.bally,10, function(){});
+		rectangle(data.playerone.position.playeronex,data.playerone.position.playeroney,15,50);
+		rectangle(data.playertwo.position.playertwox,data.playertwo.position.playertwoy,15,50);
+	});
 });
